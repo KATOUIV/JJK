@@ -26,6 +26,8 @@ function FloatingRune({ char, x, y, delay }: { char: string; x: number; y: numbe
 
 interface HomePageProps {
   onNavigate: (view: AppView) => void;
+  userEmail?: string | null;
+  onLogout?: () => void;
 }
 
 const menuItems = [
@@ -59,7 +61,7 @@ const runePositions = Array.from({ length: 18 }, (_, i) => ({
   delay: (i * 0.7) % 5,
 }));
 
-export function HomePage({ onNavigate }: HomePageProps) {
+export function HomePage({ onNavigate, userEmail, onLogout }: HomePageProps) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -105,23 +107,48 @@ export function HomePage({ onNavigate }: HomePageProps) {
           SANCTUM v0.1.0-α
         </span>
         {/* Account button */}
-        <motion.button
-          id="home-account-btn"
-          className="flex items-center gap-2 cursor-pointer"
-          style={{
-            background: "rgba(28,28,28,0.7)",
-            border: "1px solid rgba(170,0,0,0.3)",
-            padding: "6px 12px",
-            color: "var(--jjk-text-3)",
-            borderRadius: 0,
-          }}
-          whileHover={{ borderColor: "rgba(170,0,0,0.7)", color: "var(--jjk-text)", boxShadow: "0 0 12px rgba(170,0,0,0.2)" }}
-          whileTap={{ scale: 0.96 }}
-          onClick={() => onNavigate("login")}
-        >
-          <User size={14} />
-          <span style={{ fontFamily: "'Noto Sans SC', sans-serif", fontSize: 12 }}>账号登录</span>
-        </motion.button>
+        {userEmail ? (
+          <div className="flex items-center gap-2">
+            <span style={{ fontSize: 11, color: "var(--jjk-text-3)", fontFamily: "'Noto Sans SC', sans-serif" }}>
+              {userEmail}
+            </span>
+            <motion.button
+              id="home-logout-btn"
+              className="flex items-center gap-2 cursor-pointer"
+              style={{
+                background: "rgba(28,28,28,0.7)",
+                border: "1px solid rgba(170,0,0,0.3)",
+                padding: "6px 12px",
+                color: "var(--jjk-text-3)",
+                borderRadius: 0,
+              }}
+              whileHover={{ borderColor: "rgba(170,0,0,0.7)", color: "var(--jjk-text)", boxShadow: "0 0 12px rgba(170,0,0,0.2)" }}
+              whileTap={{ scale: 0.96 }}
+              onClick={onLogout}
+            >
+              <User size={14} />
+              <span style={{ fontFamily: "'Noto Sans SC', sans-serif", fontSize: 12 }}>退出登录</span>
+            </motion.button>
+          </div>
+        ) : (
+          <motion.button
+            id="home-account-btn"
+            className="flex items-center gap-2 cursor-pointer"
+            style={{
+              background: "rgba(28,28,28,0.7)",
+              border: "1px solid rgba(170,0,0,0.3)",
+              padding: "6px 12px",
+              color: "var(--jjk-text-3)",
+              borderRadius: 0,
+            }}
+            whileHover={{ borderColor: "rgba(170,0,0,0.7)", color: "var(--jjk-text)", boxShadow: "0 0 12px rgba(170,0,0,0.2)" }}
+            whileTap={{ scale: 0.96 }}
+            onClick={() => onNavigate("login")}
+          >
+            <User size={14} />
+            <span style={{ fontFamily: "'Noto Sans SC', sans-serif", fontSize: 12 }}>注册/登录</span>
+          </motion.button>
+        )}
       </div>
 
       {/* Center content */}

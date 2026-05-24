@@ -15,6 +15,7 @@ import { LorebookModal } from "../components/SillyTavern/LorebookModal";
 import { PresetModal } from "../components/SillyTavern/PresetModal";
 import { VariablesModal } from "../components/SillyTavern/VariablesModal";
 import { testConnection } from "../sillytavern/api-tools";
+import { switchUserDatabase } from "../sillytavern/database";
 
 import type { AppView, ChatMessage, GameState, CharacterCreation } from "./types";
 
@@ -391,8 +392,14 @@ function InnerApp() {
   }, [settings?.api.baseUrl, settings?.api.apiKey, settings?.api.model]);
 
   const handleNavigate = useCallback((v: AppView) => {
+    const email = localStorage.getItem('jjk_current_user_email');
+    if (v !== 'login' && v !== 'home' && !email) {
+      addNotification({ type: 'warning', title: '需要登录', message: '请先注册或登录咒术档案', duration: 3000 });
+      setView('login');
+      return;
+    }
     setView(v);
-  }, []);
+  }, [addNotification]);
 
   const handleSendMessage = useCallback(
     async (text: string) => {
@@ -461,10 +468,27 @@ function InnerApp() {
     <>
       <AnimatePresence mode="wait">
         {view === "home" && (
-          <HomePage key="home" onNavigate={handleNavigate} />
+          <HomePage
+            key="home"
+            onNavigate={handleNavigate}
+            userEmail={localStorage.getItem('jjk_current_user_email')}
+            onLogout={() => {
+              localStorage.removeItem('jjk_current_user_email');
+              switchUserDatabase('');
+              window.location.reload();
+            }}
+          />
         )}
         {view === "login" && (
-          <LoginPage key="login" onClose={() => setView("home")} onNavigate={handleNavigate} />
+          <LoginPage
+            key="login"
+            onClose={() => setView("home")}
+            onNavigate={handleNavigate}
+            onLogin={(email) => {
+              switchUserDatabase(email);
+              window.location.reload();
+            }}
+          />
         )}
         {view === "new-game" && (
           <NewGameFlow

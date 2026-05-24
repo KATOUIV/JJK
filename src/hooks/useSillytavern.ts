@@ -63,7 +63,12 @@ export function useSillytavern() {
     [chats, activeChatId]
   );
   const activePreset = useMemo(
-    () => presets.find((p) => p.id === settings?.activePresetId) ?? presets[0] ?? null,
+    () => presets.find((p) => p.id === settings?.activePresetId) ?? presets.filter((p) => p.apiTarget === 'primary' || p.apiTarget === 'both' || !p.apiTarget)[0] ?? presets[0] ?? null,
+    [presets, settings]
+  );
+
+  const secondaryPreset = useMemo(
+    () => presets.find((p) => p.id === settings?.secondaryPresetId) ?? presets.filter((p) => p.apiTarget === 'secondary' || p.apiTarget === 'both')[0] ?? null,
     [presets, settings]
   );
 
@@ -108,6 +113,30 @@ export function useSillytavern() {
               id: crypto.randomUUID(),
               createdAt: Date.now(),
               updatedAt: Date.now(),
+              apiTarget: 'primary',
+            };
+            await savePreset(preset);
+            p = await getPresets();
+          }
+        } catch {
+          // ignore import errors
+        }
+      }
+
+      // Auto-import secondary preset if missing and dual mode is available
+      const hasSecondary = p.some((preset) => preset.apiTarget === 'secondary');
+      if (!hasSecondary) {
+        try {
+          const secRes = await fetch('/default-resources/secondary-preset.json');
+          if (secRes.ok) {
+            const secData = await secRes.json();
+            const imported = importPreset(secData);
+            const preset: ChatPreset = {
+              ...imported,
+              id: crypto.randomUUID(),
+              createdAt: Date.now(),
+              updatedAt: Date.now(),
+              apiTarget: 'secondary',
             };
             await savePreset(preset);
             p = await getPresets();
@@ -128,6 +157,7 @@ export function useSillytavern() {
               id: crypto.randomUUID(),
               createdAt: Date.now(),
               updatedAt: Date.now(),
+              apiTarget: 'both',
             };
             await saveLorebook(lorebook);
             l = await getLorebooks();
@@ -142,9 +172,17 @@ export function useSillytavern() {
       setPresets(p);
       const mergedSettings = s ? { ...DEFAULT_SETTINGS, ...s } : { ...DEFAULT_SETTINGS };
 
-      // Auto-activate first preset if none selected
-      if (!mergedSettings.activePresetId && p.length > 0) {
-        mergedSettings.activePresetId = p[0].id;
+      // Auto-activate first primary preset if none selected
+      const primaryPresets = p.filter((preset) => preset.apiTarget === 'primary' || preset.apiTarget === 'both' || !preset.apiTarget);
+      if (!mergedSettings.activePresetId && primaryPresets.length > 0) {
+        mergedSettings.activePresetId = primaryPresets[0].id;
+        await saveSettings(mergedSettings);
+      }
+
+      // Auto-activate first secondary preset if none selected and dual mode
+      const secondaryPresets = p.filter((preset) => preset.apiTarget === 'secondary' || preset.apiTarget === 'both');
+      if (!mergedSettings.secondaryPresetId && secondaryPresets.length > 0) {
+        mergedSettings.secondaryPresetId = secondaryPresets[0].id;
         await saveSettings(mergedSettings);
       }
 
@@ -431,11 +469,11 @@ export function useSillytavern() {
       let apiUsed: 'primary' | 'secondary' = 'primary';
 
       // 2. Dual API mode: call secondary API for variables
-      if (isDual && primaryMaintext) {
+      if (isDual && primaryMaintext && secondaryPreset) {
         try {
           const secondaryMessages = assembleSecondaryPrompt({
             maintext: primaryMaintext,
-            preset: activePreset!,
+            preset: secondaryPreset,
             userName: settings.userName,
             characterName: settings.characterName,
             variables: updatedChat.variables,
@@ -493,7 +531,7 @@ export function useSillytavern() {
       await db.chats.put(finalChat);
       setChats((prev) => prev.map((c) => (c.id === finalChat.id ? finalChat : c)));
     },
-    [activeChat, settings, lorebooks, activePreset, parser, router]
+    [activeChat, settings, lorebooks, activePreset, secondaryPreset, parser, router]
   );
 
   const jumpToFloor = useCallback(
@@ -559,6 +597,7 @@ export function useSillytavern() {
     chats,
     activeChat,
     activePreset,
+    secondaryPreset,
     initialized,
 
     // chat actions

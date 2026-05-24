@@ -133,6 +133,8 @@ export interface ChatPreset {
   settings: Record<string, any>;
   createdAt: number;
   updatedAt: number;
+  /** Which API(s) should use this preset: primary=story API, secondary=variable API, both=all APIs */
+  apiTarget?: 'primary' | 'secondary' | 'both';
 }
 
 // ========== Settings Types ==========
@@ -158,6 +160,8 @@ export interface AppSettings {
   /** 'single' = primary API handles all tasks. 'dual' = primary handles story, secondary handles variables. */
   apiMode: 'single' | 'dual';
   activePresetId: string | null;
+  /** ID of the preset used for secondary API (variables/summary) */
+  secondaryPresetId?: string | null;
   activeLorebookIds: string[];
   userName: string;
   characterName: string;
@@ -220,6 +224,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   },
   apiMode: 'single',
   activePresetId: null,
+  secondaryPresetId: null,
   activeLorebookIds: [],
   userName: '用户',
   characterName: 'AI',

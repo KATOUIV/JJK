@@ -7,8 +7,15 @@ import type { Lorebook, ChatPreset, AppSettings, ChatSession } from './types';
 import { DEFAULT_SETTINGS } from './types';
 import { loadUserData } from './data-loader';
 
-const DB_NAME = 'SillyTavernWebDB';
 const DB_VERSION = 3;
+
+function getUserDBName(): string {
+  const email = localStorage.getItem('jjk_current_user_email');
+  if (email) {
+    return `SillyTavernWebDB_${email.replace(/[@.]/g, '_')}`;
+  }
+  return 'SillyTavernWebDB';
+}
 
 class AppDatabase extends Dexie {
   lorebooks!: Table<Lorebook>;
@@ -16,8 +23,8 @@ class AppDatabase extends Dexie {
   settings!: Table<AppSettings>;
   chats!: Table<ChatSession>;
 
-  constructor() {
-    super(DB_NAME);
+  constructor(name: string) {
+    super(name);
     this.version(1).stores({
       lorebooks: 'id, name, updatedAt',
       presets: 'id, name, updatedAt',
@@ -52,12 +59,21 @@ class AppDatabase extends Dexie {
 }
 
 let dbInstance: AppDatabase | null = null;
+let currentDBName: string | null = null;
 
 export function getDatabase(): AppDatabase {
-  if (!dbInstance) {
-    dbInstance = new AppDatabase();
+  const dbName = getUserDBName();
+  if (!dbInstance || currentDBName !== dbName) {
+    dbInstance = new AppDatabase(dbName);
+    currentDBName = dbName;
   }
   return dbInstance;
+}
+
+export function switchUserDatabase(email: string): void {
+  dbInstance = null;
+  currentDBName = null;
+  localStorage.setItem('jjk_current_user_email', email);
 }
 
 export async function initializeDatabase(): Promise<void> {
