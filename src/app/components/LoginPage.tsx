@@ -13,61 +13,80 @@ function isQQEmail(email: string): boolean {
   return /^[1-9]\d{4,10}@qq\.com$/i.test(email.trim());
 }
 
-function generateCode(): string {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-}
-
 export function LoginPage({ onClose, onNavigate, onLogin }: LoginPageProps) {
   const [mode, setMode] = useState<"login" | "register">("register");
-  const [step, setStep] = useState<1 | 2>(1);
   const [showPwd, setShowPwd] = useState(false);
   const [form, setForm] = useState({ email: "", password: "", confirm: "", code: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [sentCode, setSentCode] = useState("");
+  const [verifyToken, setVerifyToken] = useState("");
   const [codeSent, setCodeSent] = useState(false);
   const [countdown, setCountdown] = useState(0);
 
   const registeredUsers = JSON.parse(localStorage.getItem("jjk_registered_users") || "[]") as string[];
 
-  const sendCode = () => {
+  const sendCode = async () => {
     const email = form.email.trim();
     if (!isQQEmail(email)) { setError("请输入正确的 QQ 邮箱（如 123456@qq.com）"); return; }
     if (mode === "register" && registeredUsers.includes(email)) { setError("该邮箱已注册，请直接登录"); return; }
     if (mode === "login" && !registeredUsers.includes(email)) { setError("该邮箱未注册，请先注册"); return; }
 
     setError("");
-    const code = generateCode();
-    setSentCode(code);
-    setCodeSent(true);
-    setCountdown(60);
-    // In a real deployment, send email via backend. Here we simulate by storing in sessionStorage.
-    sessionStorage.setItem("jjk_verification_code", code);
-    sessionStorage.setItem("jjk_verification_email", email);
+    setLoading(true);
 
-    const timer = setInterval(() => {
-      setCountdown((c) => {
-        if (c <= 1) { clearInterval(timer); return 0; }
-        return c - 1;
+    try {
+      const res = await fetch('/api/send-verification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
       });
-    }, 1000);
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || '发送验证码失败');
+        setLoading(false);
+        return;
+      }
+      setVerifyToken(data.token);
+      setCodeSent(true);
+      setCountdown(60);
+      const timer = setInterval(() => {
+        setCountdown((c) => {
+          if (c <= 1) { clearInterval(timer); return 0; }
+          return c - 1;
+        });
+      }, 1000);
+    } catch {
+      setError('网络错误，请稍后重试');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const email = form.email.trim();
     if (!isQQEmail(email)) { setError("请输入正确的 QQ 邮箱"); return; }
     if (!form.code || form.code.length !== 6) { setError("请输入 6 位验证码"); return; }
     if (mode === "register" && !form.password) { setError("请设置密码"); return; }
     if (mode === "register" && form.password !== form.confirm) { setError("两次密码不一致"); return; }
-
-    const storedCode = sessionStorage.getItem("jjk_verification_code");
-    if (form.code !== storedCode && form.code !== sentCode) { setError("验证码错误"); return; }
+    if (!verifyToken) { setError("请先获取验证码"); return; }
 
     setError("");
     setLoading(true);
 
-    setTimeout(() => {
+    try {
+      const res = await fetch('/api/send-verification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, action: 'verify', token: verifyToken, code: form.code }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.valid) {
+        setError(data.error || '验证码错误或已过期');
+        setLoading(false);
+        return;
+      }
+
       if (mode === "register") {
         if (!registeredUsers.includes(email)) {
           registeredUsers.push(email);
@@ -81,11 +100,14 @@ export function LoginPage({ onClose, onNavigate, onLogin }: LoginPageProps) {
         localStorage.setItem("jjk_current_user_email", email);
       }
 
-      sessionStorage.removeItem("jjk_verification_code");
+      setVerifyToken("");
       onLogin?.(email);
-      setLoading(false);
       onClose();
-    }, 1200);
+    } catch {
+      setError('网络错误，请稍后重试');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -235,7 +257,7 @@ export function LoginPage({ onClose, onNavigate, onLogin }: LoginPageProps) {
               type="button"
               className="cursor-pointer"
               style={{ background: "transparent", border: "none", fontSize: 12, color: "var(--jjk-text-4)", fontFamily: "'Noto Sans SC', sans-serif" }}
-              onClick={() => { setMode(mode === "login" ? "register" : "login"); setError(""); setCodeSent(false); setSentCode(""); setForm({ email: "", password: "", confirm: "", code: "" }); }}
+              onClick={() => { setMode(mode === "login" ? "register" : "login"); setError(""); setCodeSent(false); setVerifyToken(""); setForm({ email: "", password: "", confirm: "", code: "" }); }}
             >
               {mode === "login" ? "注册账号" : "已有账号？登录"}
             </button>
