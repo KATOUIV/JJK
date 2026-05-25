@@ -446,9 +446,9 @@ export function GameView({
               <ChevronUp size={11} style={{ color: "var(--jjk-text-4)", transform: showMobileStatus ? "rotate(0)" : "rotate(180deg)", transition: "transform 0.2s" }} />
             </motion.button>
 
-            {/* Tavern management buttons — unified container per fig 1-1 */}
+            {/* Tavern management buttons — visible on all screens, icon-only on mobile */}
             <div
-              className="hidden md:flex items-center"
+              className="flex items-center"
               style={{
                 background: "rgba(14,10,8,0.6)",
                 border: "1px solid rgba(170,0,0,0.25)",
@@ -465,7 +465,7 @@ export function GameView({
               ].map((btn, idx, arr) => (
                 <motion.button
                   key={btn.label}
-                  className="flex items-center gap-1 px-2.5 py-1.5 cursor-pointer"
+                  className="flex items-center gap-1 px-1.5 md:px-2.5 py-1 md:py-1.5 cursor-pointer"
                   style={{
                     background: "transparent",
                     border: "none",
@@ -478,6 +478,7 @@ export function GameView({
                 >
                   <btn.icon size={12} style={{ color: "var(--jjk-text-4)" }} />
                   <span
+                    className="hidden md:inline"
                     style={{
                       fontSize: 11,
                       color: "var(--jjk-text-4)",
