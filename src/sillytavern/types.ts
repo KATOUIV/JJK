@@ -212,7 +212,7 @@ export const DEFAULT_FORMAT_PROMPT = `你必须严格按照以下 XML 标签格�
 - 人际档案.\${NPC名}：{ 好感数值, 信任度, 关系阶段, 欲望值 }，仅限有姓名角色
 - 系统.时间 / 系统.地点：位移或时间流逝后分别更新四个子字段`;
 
-export const DEFAULT_TAGS = ['maintext', 'option', 'sum', 'vars', 'UpdateVariable', 'thinking', 'think'] as const;
+export const DEFAULT_TAGS = ['maintext', 'content', 'option', 'sum', 'vars', 'UpdateVariable', 'thinking', 'think'] as const;
 export const DEFAULT_OPAQUE_TAGS = ['thinking', 'think', 'UpdateVariable'] as const;
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -233,7 +233,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   autoSave: true,
   autoSaveInterval: 30,
   uiMode: 'game',
-  customTags: ['maintext', 'option', 'sum', 'vars', 'UpdateVariable', 'thinking', 'think'],
+  customTags: ['maintext', 'content', 'option', 'sum', 'vars', 'UpdateVariable', 'thinking', 'think'],
   formatPromptTemplate: DEFAULT_FORMAT_PROMPT,
   thinkingDisplay: 'fold',
 };

@@ -21,12 +21,12 @@ export function HistoryDrawer({ onClose }: { onClose: () => void }) {
         <ol style={{ listStyle: 'none', padding: 0 }}>
           {messages.map((m, i) => {
             const summary = m.role === 'assistant'
-              ? (m.parsed?.maintext ?? m.content).slice(0, 60)
-              : m.content.slice(0, 60);
+              ? (m.parsed?.maintext ?? m.content ?? '').slice(0, 60)
+              : (m.content ?? '').slice(0, 60);
             return (
               <li key={m.id} style={{ borderBottom: '1px solid #eee', padding: 8 }}>
                 <div style={{ fontSize: 12, color: '#888' }}>#{i} · {m.role} · {new Date(m.timestamp).toLocaleTimeString()}</div>
-                <div style={{ fontSize: 14, marginTop: 4 }}>{summary}…</div>
+                <div style={{ fontSize: 14, marginTop: 4 }}>{summary}{summary.length >= 60 ? '…' : ''}</div>
                 <div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
                   <button onClick={() => { st.jumpToFloor(m.id); onClose(); }}>跳转</button>
                   <button onClick={() => { const t = prompt('编辑内容', m.content); if (t != null) st.editMessage(m.id, t); }}>编辑</button>

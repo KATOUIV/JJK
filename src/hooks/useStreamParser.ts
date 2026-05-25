@@ -52,7 +52,7 @@ function applyEvents(prev: StreamParserState, events: ParserEvent[]): StreamPars
   let next = { ...prev };
   for (const ev of events) {
     if (ev.type === 'tag-chunk') {
-      if (ev.tag === 'maintext') next.maintext += ev.chunk;
+      if (ev.tag === 'maintext' || ev.tag === 'content') next.maintext += ev.chunk;
       else if (ev.tag === 'thinking' || ev.tag === 'think') next.thinking += ev.chunk;
       else if (ev.tag === 'sum') next.sum += ev.chunk;
       else if (ev.tag === 'vars') next.varsRaw += ev.chunk;

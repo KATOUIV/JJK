@@ -86,7 +86,7 @@ export function aggregateEvents(events: ParserEvent[]): ParsedTags {
   for (const ev of events) {
     if (ev.type === 'tag-close') {
       if (ev.tag === 'thinking' || ev.tag === 'think') parsed.thinking = ev.full;
-      else if (ev.tag === 'maintext') parsed.maintext = ev.full;
+      else if (ev.tag === 'maintext' || ev.tag === 'content') parsed.maintext = ev.full;
       else if (ev.tag === 'sum') parsed.sum = ev.full;
       else if (ev.tag === 'vars') {
         parsed.varsRaw = ev.full;

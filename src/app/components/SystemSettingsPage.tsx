@@ -900,25 +900,6 @@ export function SystemSettingsPage({ onNavigate, onOpenLorebooks, onOpenPresets 
                 <RefreshCw size={12} />
                 恢复默认预设
               </button>
-              <button
-                type="button"
-                className="jjk-btn jjk-btn--ghost w-full"
-                style={{ fontSize: 12 }}
-                onClick={() => {
-                  if (!confirm('确定恢复默认 API 设置？')) return;
-                  updateSettings({
-                    apiMode: 'single',
-                    api: {
-                      baseUrl: '',
-                      apiKey: '',
-                      model: '',
-                    },
-                  });
-                }}
-              >
-                <RotateCcw size={12} />
-                恢复默认 API 设置
-              </button>
             </div>
           </SectionCard>
         </motion.div>

@@ -130,16 +130,23 @@ function extractStoryText(raw: string): string {
     .replace(/<thinking\b[^>]*>[\s\S]*?<\/thinking>/gi, '')
     .replace(/<think\b[^>]*>[\s\S]*?<\/think>/gi, '')
     .replace(/<sum\b[^>]*>[\s\S]*?<\/sum>/gi, '')
+    .replace(/<content\b[^>]*>[\s\S]*?<\/content>/gi, '')
     .replace(/<options\b[^>]*>[\s\S]*?<\/options>/gi, '')
     .replace(/<option\b[^>]*>[\s\S]*?<\/option>/gi, '');
 
-  // 如果还有其它 XML 标签（如 <options>、<sum> 等），只保留第一个标签之前的纯文本
-  const firstTagIndex = cleaned.search(/<[a-zA-Z_][\w]*\b[^>]*>/);
-  if (firstTagIndex > 0) {
-    cleaned = cleaned.slice(0, firstTagIndex);
-  } else if (firstTagIndex === 0) {
-    // 内容以 XML 标签开头且没有前置文本 → 隐藏
-    return '';
+  // 循环移除开头的 XML 标签对，直到遇到纯文本或无法继续
+  while (true) {
+    const firstTagIndex = cleaned.search(/<[a-zA-Z_][\w]*\b[^>]*>/);
+    if (firstTagIndex > 0) {
+      cleaned = cleaned.slice(0, firstTagIndex);
+      break;
+    } else if (firstTagIndex === 0) {
+      const next = cleaned.replace(/<[a-zA-Z_][\w]*\b[^>]*>([\s\S]*?)<\/[a-zA-Z_][\w]*>/, '$1').trim();
+      if (next === cleaned) break; // 无法移除，防止无限循环
+      cleaned = next;
+    } else {
+      break;
+    }
   }
 
   // 清理遗落的孤立结束标签（如 </wlog>）并去空
@@ -168,8 +175,11 @@ function tavernMessageToAppMessage(msg: {
     // 核心策略：优先从完整原始 XML 正则提取 <maintext>，不依赖可能丢失的 parsed 对象
     // 允许标签带属性，如 <maintext class="story">
     const maintextMatch = msg.content.match(/<maintext\b[^>]*>([\s\S]*?)<\/maintext>/i);
+    const contentMatch = msg.content.match(/<content\b[^>]*>([\s\S]*?)<\/content>/i);
     if (maintextMatch) {
       displayContent = maintextMatch[1].trim();
+    } else if (contentMatch) {
+      displayContent = contentMatch[1].trim();
     } else if (msg.parsed && typeof msg.parsed.maintext === 'string' && msg.parsed.maintext.length > 0) {
       // 备用：数据库里的 parsed 对象若完好，直接用它
       displayContent = msg.parsed.maintext;

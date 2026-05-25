@@ -172,6 +172,14 @@ export function useSillytavern() {
       setPresets(p);
       const mergedSettings = s ? { ...DEFAULT_SETTINGS, ...s } : { ...DEFAULT_SETTINGS };
 
+      // Ensure customTags is up-to-date with latest defaults
+      const requiredTags = new Set(DEFAULT_SETTINGS.customTags);
+      const currentTags = new Set(mergedSettings.customTags ?? []);
+      if (mergedSettings.customTags && ![...requiredTags].every((t) => currentTags.has(t))) {
+        mergedSettings.customTags = [...new Set([...mergedSettings.customTags, ...DEFAULT_SETTINGS.customTags])];
+        await saveSettings(mergedSettings);
+      }
+
       // Auto-activate first primary preset if none selected
       const primaryPresets = p.filter((preset) => preset.apiTarget === 'primary' || preset.apiTarget === 'both' || !preset.apiTarget);
       if (!mergedSettings.activePresetId && primaryPresets.length > 0) {
