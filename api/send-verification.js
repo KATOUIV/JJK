@@ -1,5 +1,4 @@
 import crypto from 'crypto';
-import nodemailer from 'nodemailer';
 
 const SECRET = process.env.VERIFY_SECRET;
 const SMTP_USER = process.env.SMTP_USER;
@@ -31,7 +30,6 @@ function verifyToken(token, email, code) {
 
 export default async function handler(req, res) {
   try {
-    // Enable CORS — reflect origin to support any deployed domain
     const origin = req.headers.origin;
     if (origin) {
       res.setHeader('Access-Control-Allow-Origin', origin);
@@ -55,11 +53,10 @@ export default async function handler(req, res) {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
     const { email, action, token, code } = body;
 
-    if (!email || !/[\w.-]+@[\w.-]+\.\w+/.test(email)) {
+    if (!email || ![\w.-]+@[\w.-]+\.\w+/.test(email)) {
       return res.status(400).json({ error: 'Invalid email' });
     }
 
-    // Verify code
     if (action === 'verify') {
       if (!token || !code) {
         return res.status(400).json({ error: 'Missing token or code' });
@@ -68,11 +65,17 @@ export default async function handler(req, res) {
       return res.status(200).json({ valid });
     }
 
-    // Send code
     const verificationCode = generateCode();
     const newToken = createToken(email, verificationCode);
 
-    const transporter = nodemailer.createTransport({
+    let nodemailer;
+    try {
+      nodemailer = await import('nodemailer');
+    } catch (modErr) {
+      return res.status(500).json({ error: 'Module nodemailer not found. Build may have failed to install dependencies.', detail: modErr.message });
+    }
+
+    const transporter = nodemailer.default.createTransport({
       host: 'smtp.qq.com',
       port: 465,
       secure: true,
