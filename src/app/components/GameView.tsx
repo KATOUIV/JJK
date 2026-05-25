@@ -628,7 +628,7 @@ export function GameView({
             <p style={{ fontSize: 10, color: "rgba(100,60,60,0.5)", fontFamily: "'Share Tech Mono', monospace" }}>
               ENTER 发送 · SHIFT+ENTER 换行 · ESC/M 主页 · 1~5 面板 · S 设置 · V 变量 · L 世界书 · P 预设
             </p>
-            {apiConnected && (
+            {apiConnected ? (
               <div className="flex items-center gap-1.5">
                 <span
                   style={{
@@ -642,6 +642,21 @@ export function GameView({
                 />
                 <span style={{ fontSize: 10, color: "#00CC66", fontFamily: "'Share Tech Mono', monospace" }}>
                   链接就绪
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5">
+                <span
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: "50%",
+                    background: "#555555",
+                    display: "inline-block",
+                  }}
+                />
+                <span style={{ fontSize: 10, color: "#888888", fontFamily: "'Share Tech Mono', monospace" }}>
+                  未连接
                 </span>
               </div>
             )}
