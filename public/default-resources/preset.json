@@ -1,5 +1,5 @@
 {
-  "name": "【普赛克】",
+  "name": "【普赛克】异界转生录适配预设 4/2更新",
   "temperature": 1.2,
   "frequency_penalty": 0,
   "presence_penalty": 0,
@@ -716,316 +716,321 @@
   ],
   "prompt_order": [
     {
-      "identifier": "main",
-      "enabled": true
-    },
-    {
-      "identifier": "80df0075-374e-49f3-8123-ef263551c5bc",
-      "enabled": true
-    },
-    {
-      "identifier": "33c1a7b1-4622-43b0-94ec-dec6407ba2c4",
-      "enabled": true
-    },
-    {
-      "identifier": "8a024a7a-799a-40e2-b9ff-43b1b9e2e615",
-      "enabled": false
-    },
-    {
-      "identifier": "fad9f8b1-0bde-46d9-945b-83033f096a57",
-      "enabled": false
-    },
-    {
-      "identifier": "07a9834b-e8d8-48da-b83c-e899e0d82c33",
-      "enabled": true
-    },
-    {
-      "identifier": "db842f3e-3a57-4d20-b48a-e180f2854827",
-      "enabled": false
-    },
-    {
-      "identifier": "26d86b43-22a9-4df0-818b-4c1d23424493",
-      "enabled": true
-    },
-    {
-      "identifier": "c5094915-91d8-4431-8b1e-e654338e0335",
-      "enabled": true
-    },
-    {
-      "identifier": "a7494b4e-56df-4167-b4fa-c1a3c8cb0c10",
-      "enabled": true
-    },
-    {
-      "identifier": "d06cfe28-6475-431b-a175-f288c5f92706",
-      "enabled": true
-    },
-    {
-      "identifier": "89bd214a-0496-4dc5-be6e-79661e96dcc9",
-      "enabled": false
-    },
-    {
-      "identifier": "b7631203-ea5c-40ca-8fca-f41f3582b5bc",
-      "enabled": false
-    },
-    {
-      "identifier": "027d0557-cb5d-419d-99ac-9896985692e2",
-      "enabled": false
-    },
-    {
-      "identifier": "b48cab51-ae05-4561-a436-1375486747c6",
-      "enabled": true
-    },
-    {
-      "identifier": "cc56350f-61be-4ad3-ab93-7bac8e94f69f",
-      "enabled": true
-    },
-    {
-      "identifier": "0d96e612-6f83-4142-b61e-15adb26b3977",
-      "enabled": true
-    },
-    {
-      "identifier": "6dbd590f-9086-431d-9dbf-89ffcf212f85",
-      "enabled": true
-    },
-    {
-      "identifier": "d594ed85-064f-45e8-b6c6-07695645445b",
-      "enabled": false
-    },
-    {
-      "identifier": "e75509f8-4425-46b7-88ff-503cf722eb67",
-      "enabled": true
-    },
-    {
-      "identifier": "1b90e232-003c-476a-a50e-ad6b17a9534b",
-      "enabled": false
-    },
-    {
-      "identifier": "4b85e02c-edc6-44bd-a7ca-7817da281b4b",
-      "enabled": false
-    },
-    {
-      "identifier": "4d7106bb-b156-41bc-9d3b-f22fc54926da",
-      "enabled": false
-    },
-    {
-      "identifier": "e902b80b-b912-4063-b61e-e24cc2edee45",
-      "enabled": false
-    },
-    {
-      "identifier": "dbbccd4b-431c-4cd2-9c05-0f8c0177f34b",
-      "enabled": false
-    },
-    {
-      "identifier": "7036a7d9-ada2-44d0-ac53-47fc0f05f131",
-      "enabled": false
-    },
-    {
-      "identifier": "39730b88-46af-465e-ac5d-aa25e3ab6453",
-      "enabled": false
-    },
-    {
-      "identifier": "4c3c73d9-0b3b-457a-a12c-9ce5453734e7",
-      "enabled": true
-    },
-    {
-      "identifier": "bfb6bf16-1bcb-49a3-ba6f-bb25cbda80df",
-      "enabled": true
-    },
-    {
-      "identifier": "cb18df5c-266e-47e8-a85c-463fe893634d",
-      "enabled": false
-    },
-    {
-      "identifier": "d9446011-7486-4589-b53e-a69af8578406",
-      "enabled": true
-    },
-    {
-      "identifier": "31770c8f-33b0-4226-9474-203de834e936",
-      "enabled": true
-    },
-    {
-      "identifier": "b8bc6a6c-357a-401a-9fc7-7c08bdf63e75",
-      "enabled": true
-    },
-    {
-      "identifier": "0d540b9f-560c-42d2-896d-404dce27a301",
-      "enabled": true
-    },
-    {
-      "identifier": "worldInfoBefore",
-      "enabled": true
-    },
-    {
-      "identifier": "charDescription",
-      "enabled": true
-    },
-    {
-      "identifier": "personaDescription",
-      "enabled": true
-    },
-    {
-      "identifier": "charPersonality",
-      "enabled": true
-    },
-    {
-      "identifier": "scenario",
-      "enabled": true
-    },
-    {
-      "identifier": "worldInfoAfter",
-      "enabled": true
-    },
-    {
-      "identifier": "6cf45f27-0bcd-4fae-94f3-d3438bd9d0aa",
-      "enabled": true
-    },
-    {
-      "identifier": "a97c2b85-4d65-45c4-8b5a-de7f5b4a4fe3",
-      "enabled": false
-    },
-    {
-      "identifier": "80dbe780-a4e3-4adc-ae8f-e346143b3215",
-      "enabled": false
-    },
-    {
-      "identifier": "dialogueExamples",
-      "enabled": true
-    },
-    {
-      "identifier": "95405ba9-1c1c-4a18-bfc9-a648ee65f40d",
-      "enabled": true
-    },
-    {
-      "identifier": "e0c4f9a3-d66e-49fe-8c96-cda741fb8e49",
-      "enabled": true
-    },
-    {
-      "identifier": "aecd1d30-2853-4932-b216-0d0bf603d86f",
-      "enabled": true
-    },
-    {
-      "identifier": "d98ffa83-0bac-460a-b7ff-a6d6119ce0a2",
-      "enabled": true
-    },
-    {
-      "identifier": "6b804b16-bd13-4a90-8f5c-a5b06436f4b3",
-      "enabled": true
-    },
-    {
-      "identifier": "44333dea-2721-408d-8b5f-d7f8ea94a4a0",
-      "enabled": true
-    },
-    {
-      "identifier": "7c4fcce2-abfa-45df-b669-fb54ec164fff",
-      "enabled": true
-    },
-    {
-      "identifier": "b929e4b7-d5f7-4166-9539-9947e578018d",
-      "enabled": false
-    },
-    {
-      "identifier": "2c692a72-f113-4f36-9cf2-481462fde884",
-      "enabled": false
-    },
-    {
-      "identifier": "0b7f776c-bec2-4229-afe9-92529305d8ad",
-      "enabled": true
-    },
-    {
-      "identifier": "b2532516-f9b7-4179-b7bb-8014c8dece86",
-      "enabled": true
-    },
-    {
-      "identifier": "6b07d1fb-537e-4bbd-b9b4-9b39daad41b2",
-      "enabled": true
-    },
-    {
-      "identifier": "17131e56-5e02-49ca-97d4-462e8f0c585b",
-      "enabled": false
-    },
-    {
-      "identifier": "chatHistory",
-      "enabled": true
-    },
-    {
-      "identifier": "6beefbc7-3e8c-436a-8888-b26b7b5e987e",
-      "enabled": true
-    },
-    {
-      "identifier": "7d3b92ff-f862-4eb2-9860-170ccbdd6dc9",
-      "enabled": true
-    },
-    {
-      "identifier": "4477b38e-83f6-486f-be74-df0b42d17ba1",
-      "enabled": false
-    },
-    {
-      "identifier": "2039c044-0db5-4caa-a0ad-a078b9f37f87",
-      "enabled": true
-    },
-    {
-      "identifier": "bf7b61c3-c72d-4675-87ff-f968b2ca9f99",
-      "enabled": false
-    },
-    {
-      "identifier": "86140b86-1dc9-4b20-8657-a1bc349015dc",
-      "enabled": false
-    },
-    {
-      "identifier": "9db9d16d-ca90-4357-84b1-00346a81d158",
-      "enabled": false
-    },
-    {
-      "identifier": "4fbb20ea-8503-4007-a990-c99c03367202",
-      "enabled": false
-    },
-    {
-      "identifier": "bf3378a6-3c77-431f-a08a-13eb26cdef5f",
-      "enabled": false
-    },
-    {
-      "identifier": "d126e3f9-8acc-4a08-8cb9-934c0545a52f",
-      "enabled": false
-    },
-    {
-      "identifier": "a679de22-9152-4bd9-9ab4-bc92ec7b1cad",
-      "enabled": false
-    },
-    {
-      "identifier": "62b250b2-43ee-408e-b2a5-2caf7a83203a",
-      "enabled": true
-    },
-    {
-      "identifier": "61546461-9f59-4a93-ad61-8efceaf3338f",
-      "enabled": true
-    },
-    {
-      "identifier": "0a7bfdc3-659d-4fd0-a084-86b836045f1d",
-      "enabled": true
-    },
-    {
-      "identifier": "7c2d9187-dd2c-4dea-86cb-0849ee89c184",
-      "enabled": true
-    },
-    {
-      "identifier": "0ef6bdbf-3f3c-408a-babd-8af4ab618321",
-      "enabled": true
-    },
-    {
-      "identifier": "4733626d-3f5c-4edc-828f-2cd88b55be4d",
-      "enabled": false
-    },
-    {
-      "identifier": "nsfw",
-      "enabled": false
-    },
-    {
-      "identifier": "enhanceDefinitions",
-      "enabled": false
-    },
-    {
-      "identifier": "jailbreak",
-      "enabled": false
+      "character_id": 100001,
+      "order": [
+        {
+          "identifier": "main",
+          "enabled": true
+        },
+        {
+          "identifier": "80df0075-374e-49f3-8123-ef263551c5bc",
+          "enabled": true
+        },
+        {
+          "identifier": "33c1a7b1-4622-43b0-94ec-dec6407ba2c4",
+          "enabled": true
+        },
+        {
+          "identifier": "8a024a7a-799a-40e2-b9ff-43b1b9e2e615",
+          "enabled": false
+        },
+        {
+          "identifier": "fad9f8b1-0bde-46d9-945b-83033f096a57",
+          "enabled": false
+        },
+        {
+          "identifier": "07a9834b-e8d8-48da-b83c-e899e0d82c33",
+          "enabled": true
+        },
+        {
+          "identifier": "db842f3e-3a57-4d20-b48a-e180f2854827",
+          "enabled": false
+        },
+        {
+          "identifier": "26d86b43-22a9-4df0-818b-4c1d23424493",
+          "enabled": true
+        },
+        {
+          "identifier": "c5094915-91d8-4431-8b1e-e654338e0335",
+          "enabled": true
+        },
+        {
+          "identifier": "a7494b4e-56df-4167-b4fa-c1a3c8cb0c10",
+          "enabled": true
+        },
+        {
+          "identifier": "d06cfe28-6475-431b-a175-f288c5f92706",
+          "enabled": true
+        },
+        {
+          "identifier": "89bd214a-0496-4dc5-be6e-79661e96dcc9",
+          "enabled": false
+        },
+        {
+          "identifier": "b7631203-ea5c-40ca-8fca-f41f3582b5bc",
+          "enabled": false
+        },
+        {
+          "identifier": "027d0557-cb5d-419d-99ac-9896985692e2",
+          "enabled": false
+        },
+        {
+          "identifier": "b48cab51-ae05-4561-a436-1375486747c6",
+          "enabled": true
+        },
+        {
+          "identifier": "cc56350f-61be-4ad3-ab93-7bac8e94f69f",
+          "enabled": true
+        },
+        {
+          "identifier": "0d96e612-6f83-4142-b61e-15adb26b3977",
+          "enabled": true
+        },
+        {
+          "identifier": "6dbd590f-9086-431d-9dbf-89ffcf212f85",
+          "enabled": true
+        },
+        {
+          "identifier": "d594ed85-064f-45e8-b6c6-07695645445b",
+          "enabled": false
+        },
+        {
+          "identifier": "e75509f8-4425-46b7-88ff-503cf722eb67",
+          "enabled": true
+        },
+        {
+          "identifier": "1b90e232-003c-476a-a50e-ad6b17a9534b",
+          "enabled": false
+        },
+        {
+          "identifier": "4b85e02c-edc6-44bd-a7ca-7817da281b4b",
+          "enabled": false
+        },
+        {
+          "identifier": "4d7106bb-b156-41bc-9d3b-f22fc54926da",
+          "enabled": false
+        },
+        {
+          "identifier": "e902b80b-b912-4063-b61e-e24cc2edee45",
+          "enabled": false
+        },
+        {
+          "identifier": "dbbccd4b-431c-4cd2-9c05-0f8c0177f34b",
+          "enabled": false
+        },
+        {
+          "identifier": "7036a7d9-ada2-44d0-ac53-47fc0f05f131",
+          "enabled": false
+        },
+        {
+          "identifier": "39730b88-46af-465e-ac5d-aa25e3ab6453",
+          "enabled": false
+        },
+        {
+          "identifier": "4c3c73d9-0b3b-457a-a12c-9ce5453734e7",
+          "enabled": true
+        },
+        {
+          "identifier": "bfb6bf16-1bcb-49a3-ba6f-bb25cbda80df",
+          "enabled": true
+        },
+        {
+          "identifier": "cb18df5c-266e-47e8-a85c-463fe893634d",
+          "enabled": false
+        },
+        {
+          "identifier": "d9446011-7486-4589-b53e-a69af8578406",
+          "enabled": true
+        },
+        {
+          "identifier": "31770c8f-33b0-4226-9474-203de834e936",
+          "enabled": true
+        },
+        {
+          "identifier": "b8bc6a6c-357a-401a-9fc7-7c08bdf63e75",
+          "enabled": true
+        },
+        {
+          "identifier": "0d540b9f-560c-42d2-896d-404dce27a301",
+          "enabled": true
+        },
+        {
+          "identifier": "worldInfoBefore",
+          "enabled": true
+        },
+        {
+          "identifier": "charDescription",
+          "enabled": true
+        },
+        {
+          "identifier": "personaDescription",
+          "enabled": true
+        },
+        {
+          "identifier": "charPersonality",
+          "enabled": true
+        },
+        {
+          "identifier": "scenario",
+          "enabled": true
+        },
+        {
+          "identifier": "worldInfoAfter",
+          "enabled": true
+        },
+        {
+          "identifier": "6cf45f27-0bcd-4fae-94f3-d3438bd9d0aa",
+          "enabled": true
+        },
+        {
+          "identifier": "a97c2b85-4d65-45c4-8b5a-de7f5b4a4fe3",
+          "enabled": false
+        },
+        {
+          "identifier": "80dbe780-a4e3-4adc-ae8f-e346143b3215",
+          "enabled": false
+        },
+        {
+          "identifier": "dialogueExamples",
+          "enabled": true
+        },
+        {
+          "identifier": "95405ba9-1c1c-4a18-bfc9-a648ee65f40d",
+          "enabled": true
+        },
+        {
+          "identifier": "e0c4f9a3-d66e-49fe-8c96-cda741fb8e49",
+          "enabled": true
+        },
+        {
+          "identifier": "aecd1d30-2853-4932-b216-0d0bf603d86f",
+          "enabled": true
+        },
+        {
+          "identifier": "d98ffa83-0bac-460a-b7ff-a6d6119ce0a2",
+          "enabled": true
+        },
+        {
+          "identifier": "6b804b16-bd13-4a90-8f5c-a5b06436f4b3",
+          "enabled": true
+        },
+        {
+          "identifier": "44333dea-2721-408d-8b5f-d7f8ea94a4a0",
+          "enabled": true
+        },
+        {
+          "identifier": "7c4fcce2-abfa-45df-b669-fb54ec164fff",
+          "enabled": true
+        },
+        {
+          "identifier": "b929e4b7-d5f7-4166-9539-9947e578018d",
+          "enabled": false
+        },
+        {
+          "identifier": "2c692a72-f113-4f36-9cf2-481462fde884",
+          "enabled": false
+        },
+        {
+          "identifier": "0b7f776c-bec2-4229-afe9-92529305d8ad",
+          "enabled": true
+        },
+        {
+          "identifier": "b2532516-f9b7-4179-b7bb-8014c8dece86",
+          "enabled": true
+        },
+        {
+          "identifier": "6b07d1fb-537e-4bbd-b9b4-9b39daad41b2",
+          "enabled": true
+        },
+        {
+          "identifier": "17131e56-5e02-49ca-97d4-462e8f0c585b",
+          "enabled": false
+        },
+        {
+          "identifier": "chatHistory",
+          "enabled": true
+        },
+        {
+          "identifier": "6beefbc7-3e8c-436a-8888-b26b7b5e987e",
+          "enabled": true
+        },
+        {
+          "identifier": "7d3b92ff-f862-4eb2-9860-170ccbdd6dc9",
+          "enabled": true
+        },
+        {
+          "identifier": "4477b38e-83f6-486f-be74-df0b42d17ba1",
+          "enabled": false
+        },
+        {
+          "identifier": "2039c044-0db5-4caa-a0ad-a078b9f37f87",
+          "enabled": true
+        },
+        {
+          "identifier": "bf7b61c3-c72d-4675-87ff-f968b2ca9f99",
+          "enabled": false
+        },
+        {
+          "identifier": "86140b86-1dc9-4b20-8657-a1bc349015dc",
+          "enabled": false
+        },
+        {
+          "identifier": "9db9d16d-ca90-4357-84b1-00346a81d158",
+          "enabled": false
+        },
+        {
+          "identifier": "4fbb20ea-8503-4007-a990-c99c03367202",
+          "enabled": false
+        },
+        {
+          "identifier": "bf3378a6-3c77-431f-a08a-13eb26cdef5f",
+          "enabled": false
+        },
+        {
+          "identifier": "d126e3f9-8acc-4a08-8cb9-934c0545a52f",
+          "enabled": false
+        },
+        {
+          "identifier": "a679de22-9152-4bd9-9ab4-bc92ec7b1cad",
+          "enabled": false
+        },
+        {
+          "identifier": "62b250b2-43ee-408e-b2a5-2caf7a83203a",
+          "enabled": true
+        },
+        {
+          "identifier": "61546461-9f59-4a93-ad61-8efceaf3338f",
+          "enabled": true
+        },
+        {
+          "identifier": "0a7bfdc3-659d-4fd0-a084-86b836045f1d",
+          "enabled": true
+        },
+        {
+          "identifier": "7c2d9187-dd2c-4dea-86cb-0849ee89c184",
+          "enabled": true
+        },
+        {
+          "identifier": "0ef6bdbf-3f3c-408a-babd-8af4ab618321",
+          "enabled": true
+        },
+        {
+          "identifier": "4733626d-3f5c-4edc-828f-2cd88b55be4d",
+          "enabled": false
+        },
+        {
+          "identifier": "nsfw",
+          "enabled": false
+        },
+        {
+          "identifier": "enhanceDefinitions",
+          "enabled": false
+        },
+        {
+          "identifier": "jailbreak",
+          "enabled": false
+        }
+      ]
     }
   ],
   "exportedAt": "2026-04-02T01:17:02.749Z",

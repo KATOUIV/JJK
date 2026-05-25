@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { Search } from 'lucide-react';
 import type { Lorebook, LorebookEntry } from '../../sillytavern/types';
 import { EntryForm } from './EntryForm';
 import {
@@ -27,6 +28,7 @@ export function LorebookEditorModal({
   const [selectedId, setSelectedId] = useState<string | null>(
     lorebook.entries[0]?.id ?? null,
   );
+  const [searchQuery, setSearchQuery] = useState('');
 
   const dirty = useMemo(() => {
     if (!draft) return false;
@@ -39,6 +41,18 @@ export function LorebookEditorModal({
       draft.matchWholeWords !== lorebook.matchWholeWords
     );
   }, [draft, lorebook]);
+
+  const filteredEntries = useMemo(() => {
+    if (!searchQuery.trim()) return draft.entries;
+    const q = searchQuery.trim().toLowerCase();
+    return draft.entries.filter((e) => {
+      const label = entryLabel(e).toLowerCase();
+      const content = e.content.toLowerCase();
+      const keys = e.keys.join(' ').toLowerCase();
+      const secondaryKeys = e.secondaryKeys.join(' ').toLowerCase();
+      return label.includes(q) || content.includes(q) || keys.includes(q) || secondaryKeys.includes(q);
+    });
+  }, [draft.entries, searchQuery]);
 
   const selected = useMemo(
     () => draft.entries.find((e) => e.id === selectedId) ?? null,
@@ -169,8 +183,27 @@ export function LorebookEditorModal({
             >
               + 新建条目
             </button>
+            <div style={{ position: 'relative', marginBottom: 8 }}>
+              <Search size={14} style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--jjk-text-4)' }} />
+              <input
+                type="text"
+                placeholder="搜索条目..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '6px 8px 6px 28px',
+                  background: 'rgba(28,28,28,0.6)',
+                  border: '1px solid rgba(170,0,0,0.2)',
+                  borderRadius: 4,
+                  color: 'var(--jjk-text)',
+                  fontSize: 13,
+                  outline: 'none',
+                }}
+              />
+            </div>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {draft.entries.map((e) => {
+              {filteredEntries.map((e) => {
                 const statusColor = e.disabled
                   ? '#888888'
                   : e.constant
@@ -249,9 +282,9 @@ export function LorebookEditorModal({
                 );
               })}
             </ul>
-            {draft.entries.length === 0 && (
+            {filteredEntries.length === 0 && (
               <div style={{ textAlign: 'center', color: 'var(--jjk-text-4)', padding: 24, fontSize: 13 }}>
-                暂无条目,点上方按钮新建
+                {searchQuery ? '无匹配条目' : '暂无条目,点上方按钮新建'}
               </div>
             )}
           </aside>

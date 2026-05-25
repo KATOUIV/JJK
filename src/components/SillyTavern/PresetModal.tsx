@@ -146,6 +146,8 @@ export function PresetModal({ onClose }: { onClose: () => void }) {
     settings?.activePresetId ?? presets[0]?.id ?? null,
   );
   const [searchQuery, setSearchQuery] = useState('');
+  const [promptSearchQuery, setPromptSearchQuery] = useState('');
+  const [customSearchQuery, setCustomSearchQuery] = useState('');
   const original = useMemo(
     () => presets.find((p) => p.id === selectedId) ?? null,
     [presets, selectedId],
@@ -540,7 +542,30 @@ export function PresetModal({ onClose }: { onClose: () => void }) {
 
                 {tab === 'prompts' && (
                   <div>
-                    {PROMPT_TEXT_FIELDS.map((f) => (
+                    <div style={{ position: 'relative', marginBottom: 12 }}>
+                      <Search size={14} style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--jjk-text-4)' }} />
+                      <input
+                        type="text"
+                        placeholder="搜索 prompt 名称或 key..."
+                        value={promptSearchQuery}
+                        onChange={(e) => setPromptSearchQuery(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '6px 8px 6px 28px',
+                          background: 'rgba(28,28,28,0.6)',
+                          border: '1px solid rgba(170,0,0,0.2)',
+                          borderRadius: 4,
+                          color: 'var(--jjk-text)',
+                          fontSize: 13,
+                          outline: 'none',
+                        }}
+                      />
+                    </div>
+                    {PROMPT_TEXT_FIELDS.filter((f) => {
+                      if (!promptSearchQuery.trim()) return true;
+                      const q = promptSearchQuery.trim().toLowerCase();
+                      return f.label.toLowerCase().includes(q) || f.key.toLowerCase().includes(q);
+                    }).map((f) => (
                       <TextArea
                         key={f.key}
                         label={f.label + ' (' + f.key + ')'}
@@ -549,6 +574,15 @@ export function PresetModal({ onClose }: { onClose: () => void }) {
                         rows={4}
                       />
                     ))}
+                    {PROMPT_TEXT_FIELDS.filter((f) => {
+                      if (!promptSearchQuery.trim()) return true;
+                      const q = promptSearchQuery.trim().toLowerCase();
+                      return f.label.toLowerCase().includes(q) || f.key.toLowerCase().includes(q);
+                    }).length === 0 && (
+                      <div style={{ textAlign: 'center', color: 'var(--jjk-text-4)', padding: 24, fontSize: 13 }}>
+                        无匹配 prompt
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -557,78 +591,118 @@ export function PresetModal({ onClose }: { onClose: () => void }) {
                     <button onClick={handleAddCustomPrompt} style={{ marginBottom: 12, background: 'rgba(28,28,28,0.6)', border: '1px solid rgba(170,0,0,0.3)', color: 'var(--jjk-text)', padding: '6px 12px', cursor: 'pointer', borderRadius: 4 }}>
                       + 新建自定义 prompt
                     </button>
+                    <div style={{ position: 'relative', marginBottom: 12 }}>
+                      <Search size={14} style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--jjk-text-4)' }} />
+                      <input
+                        type="text"
+                        placeholder="搜索自定义 prompt 标识或内容..."
+                        value={customSearchQuery}
+                        onChange={(e) => setCustomSearchQuery(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '6px 8px 6px 28px',
+                          background: 'rgba(28,28,28,0.6)',
+                          border: '1px solid rgba(170,0,0,0.2)',
+                          borderRadius: 4,
+                          color: 'var(--jjk-text)',
+                          fontSize: 13,
+                          outline: 'none',
+                        }}
+                      />
+                    </div>
                     <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                      {((draft.settings.prompts ?? []) as CustomPromptItem[]).map((p, idx) => (
-                        <li
-                          key={p.identifier + idx}
-                          style={{
-                            border: '1px solid rgba(100,100,100,0.2)',
-                            borderRadius: 4,
-                            padding: 8,
-                            marginBottom: 8,
-                            background: 'rgba(28,28,28,0.4)',
-                          }}
-                        >
-                          <div
-                            style={{
-                              display: 'flex',
-                              gap: 8,
-                              alignItems: 'center',
-                              marginBottom: 8,
-                            }}
-                          >
-                            <code style={{ fontSize: 12, color: 'var(--jjk-text-4)' }}>{p.identifier}</code>
-                            <select
-                              value={p.role ?? 'system'}
-                              onChange={(e) => {
-                                const list = (draft.settings.prompts ?? []).slice();
-                                list[idx] = { ...list[idx], role: e.target.value as any };
-                                patchSettings({ prompts: list });
+                      {((draft.settings.prompts ?? []) as CustomPromptItem[])
+                        .map((p, idx) => ({ p, idx }))
+                        .filter(({ p }) => {
+                          if (!customSearchQuery.trim()) return true;
+                          const q = customSearchQuery.trim().toLowerCase();
+                          return p.identifier.toLowerCase().includes(q) || (p.content ?? '').toLowerCase().includes(q);
+                        })
+                        .map(({ p, idx }) => {
+                          const orderItem = (draft.settings.prompt_order ?? []).find((o: any) => o.identifier === p.identifier);
+                          const isEnabled = orderItem ? orderItem.enabled !== false : true;
+                          return (
+                            <li
+                              key={p.identifier + idx}
+                              style={{
+                                border: '1px solid rgba(100,100,100,0.2)',
+                                borderRadius: 4,
+                                padding: 8,
+                                marginBottom: 8,
+                                background: 'rgba(28,28,28,0.4)',
+                                opacity: isEnabled ? 1 : 0.6,
                               }}
-                              style={{ padding: 4, background: 'rgba(28,28,28,0.8)', border: '1px solid rgba(170,0,0,0.3)', color: 'var(--jjk-text)' }}
                             >
-                              <option value="system">system</option>
-                              <option value="user">user</option>
-                              <option value="assistant">assistant</option>
-                            </select>
-                            <span style={{ flex: 1 }} />
-                            <button
-                              onClick={() => {
-                                if (!confirm('删除此 prompt?')) return;
-                                const list = (draft.settings.prompts ?? []).filter(
-                                  (_: any, i: number) => i !== idx,
-                                );
-                                patchSettings({ prompts: list });
-                              }}
-                              style={{ color: '#FF4444', background: 'transparent', border: 'none', cursor: 'pointer' }}
-                            >
-                              删除
-                            </button>
-                          </div>
-                          <textarea
-                            value={p.content ?? ''}
-                            onChange={(e) => {
-                              const list = (draft.settings.prompts ?? []).slice();
-                              list[idx] = { ...list[idx], content: e.target.value };
-                              patchSettings({ prompts: list });
-                            }}
-                            style={{
-                              width: '100%',
-                              minHeight: 80,
-                              padding: 6,
-                              fontFamily: 'monospace',
-                              fontSize: 12,
-                              background: 'rgba(28,28,28,0.8)',
-                              border: '1px solid rgba(170,0,0,0.3)',
-                              color: 'var(--jjk-text)',
-                            }}
-                          />
-                        </li>
-                      ))}
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  gap: 8,
+                                  alignItems: 'center',
+                                  marginBottom: 8,
+                                }}
+                              >
+                                <code style={{ fontSize: 12, color: 'var(--jjk-text-4)' }}>{p.identifier}</code>
+                                <select
+                                  value={p.role ?? 'system'}
+                                  onChange={(e) => {
+                                    const list = (draft.settings.prompts ?? []).slice();
+                                    list[idx] = { ...list[idx], role: e.target.value as any };
+                                    patchSettings({ prompts: list });
+                                  }}
+                                  style={{ padding: 4, background: 'rgba(28,28,28,0.8)', border: '1px solid rgba(170,0,0,0.3)', color: 'var(--jjk-text)' }}
+                                >
+                                  <option value="system">system</option>
+                                  <option value="user">user</option>
+                                  <option value="assistant">assistant</option>
+                                </select>
+                                <span style={{ flex: 1 }} />
+                                {isEnabled ? (
+                                  <span style={{ fontSize: 10, color: '#00CC66', fontFamily: 'monospace' }}>已激活</span>
+                                ) : (
+                                  <span style={{ fontSize: 10, color: '#888', fontFamily: 'monospace' }}>未激活</span>
+                                )}
+                                <button
+                                  onClick={() => {
+                                    if (!confirm('删除此 prompt?')) return;
+                                    const list = (draft.settings.prompts ?? []).filter(
+                                      (_: any, i: number) => i !== idx,
+                                    );
+                                    patchSettings({ prompts: list });
+                                  }}
+                                  style={{ color: '#FF4444', background: 'transparent', border: 'none', cursor: 'pointer' }}
+                                >
+                                  删除
+                                </button>
+                              </div>
+                              <textarea
+                                value={p.content ?? ''}
+                                onChange={(e) => {
+                                  const list = (draft.settings.prompts ?? []).slice();
+                                  list[idx] = { ...list[idx], content: e.target.value };
+                                  patchSettings({ prompts: list });
+                                }}
+                                style={{
+                                  width: '100%',
+                                  minHeight: 80,
+                                  padding: 6,
+                                  fontFamily: 'monospace',
+                                  fontSize: 12,
+                                  background: 'rgba(28,28,28,0.8)',
+                                  border: '1px solid rgba(170,0,0,0.3)',
+                                  color: 'var(--jjk-text)',
+                                }}
+                              />
+                            </li>
+                          );
+                        })}
                     </ul>
-                    {((draft.settings.prompts ?? []) as CustomPromptItem[]).length === 0 && (
+                    {((draft.settings.prompts ?? []) as CustomPromptItem[]).filter((p) => {
+                      if (!customSearchQuery.trim()) return true;
+                      const q = customSearchQuery.trim().toLowerCase();
+                      return p.identifier.toLowerCase().includes(q) || (p.content ?? '').toLowerCase().includes(q);
+                    }).length === 0 && (
                       <div style={{ color: 'var(--jjk-text-4)', padding: 16, fontSize: 13 }}>
-                        无自定义 prompt
+                        {customSearchQuery ? '无匹配自定义 prompt' : '无自定义 prompt'}
                       </div>
                     )}
                   </div>
