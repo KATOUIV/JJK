@@ -94,7 +94,13 @@ export function GameView() {
       )}
       {st.showLorebooks && <LorebookModal onClose={() => st.setShowLorebooks(false)} />}
       {st.showPresets && <PresetModal onClose={() => st.setShowPresets(false)} />}
-      {st.showVariables && <VariablesModal onClose={() => st.setShowVariables(false)} />}
+      {st.showVariables && st.activeChat && (
+        <VariablesModal
+          variables={st.activeChat.variables || {}}
+          onUpdate={(vars) => st.setChatVariables(vars)}
+          onClose={() => st.setShowVariables(false)}
+        />
+      )}
       <Toast message={st.toast} />
     </div>
   );
