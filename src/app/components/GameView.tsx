@@ -573,30 +573,6 @@ export function GameView({
           }}
         >
           <div className="flex items-end gap-3">
-            {/* Left action buttons (fig 1-1 style) */}
-            <div className="hidden md:flex flex-col gap-1.5 shrink-0 pb-6">
-              <motion.button
-                className="flex items-center gap-1.5 px-2 py-1.5 cursor-pointer"
-                style={{ background: "rgba(170,0,0,0.08)", border: "1px solid rgba(170,0,0,0.2)" }}
-                whileHover={{ background: "rgba(170,0,0,0.14)" }}
-                whileTap={{ scale: 0.95 }}
-                onClick={onOpenSettings}
-              >
-                <Settings size={12} style={{ color: "var(--jjk-text-4)" }} />
-                <span style={{ fontSize: 11, color: "var(--jjk-text-4)", fontFamily: "'Noto Sans SC', sans-serif" }}>游戏设置</span>
-              </motion.button>
-              <motion.button
-                className="flex items-center gap-1.5 px-2 py-1.5 cursor-pointer"
-                style={{ background: "rgba(170,0,0,0.08)", border: "1px solid rgba(170,0,0,0.2)" }}
-                whileHover={{ background: "rgba(170,0,0,0.14)" }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => onNavigate("home")}
-              >
-                <Home size={12} style={{ color: "var(--jjk-text-4)" }} />
-                <span style={{ fontSize: 11, color: "var(--jjk-text-4)", fontFamily: "'Noto Sans SC', sans-serif" }}>返回主页</span>
-              </motion.button>
-            </div>
-
             <div
               className="flex-1 flex items-end gap-2"
               style={{ background: "rgba(28,20,16,0.8)", border: "1px solid rgba(170,0,0,0.2)", padding: "8px 12px 8px 14px" }}
