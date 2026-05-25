@@ -30,14 +30,11 @@ function verifyToken(token, email, code) {
 }
 
 module.exports = async (req, res) => {
-  // Enable CORS for your frontend domain
-  const allowedOrigins = [
-    'http://localhost:5173',
-    'http://localhost:3000',
-  ];
+  // Enable CORS — reflect origin to support any deployed domain
   const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
+  if (origin) {
     res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
   }
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
