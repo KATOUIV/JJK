@@ -53,7 +53,7 @@ export default async function handler(req, res) {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
     const { email, action, token, code } = body;
 
-    if (!email || ![\w.-]+@[\w.-]+\.\w+/.test(email)) {
+    if (!email || !/[\w.-]+@[\w.-]+\.\w+/.test(email)) {
       return res.status(400).json({ error: 'Invalid email' });
     }
 
