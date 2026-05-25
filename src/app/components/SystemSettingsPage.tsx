@@ -12,6 +12,7 @@ import {
   importLorebook, exportLorebook, importPreset, exportPreset,
   importJsonFile, exportToJson, importMultipleLorebooks,
 } from "../../sillytavern/importer";
+import { getDatabase } from "../../sillytavern/database";
 import type { Lorebook, ChatPreset } from "../../sillytavern/types";
 
 interface SystemSettingsPageProps {
@@ -353,6 +354,34 @@ export function SystemSettingsPage({ onNavigate, onOpenLorebooks, onOpenPresets 
   const handleActivatePreset = async (id: string) => {
     await updateSettings({ activePresetId: id });
     showToast?.('预设已激活');
+  };
+
+  const handleRestoreDefaultPreset = async () => {
+    if (!confirm('确定恢复默认预设？这将删除所有现有预设并重新导入默认预设。')) return;
+    try {
+      const res = await fetch('/default-resources/preset.json');
+      if (!res.ok) {
+        alert('默认预设文件未找到');
+        return;
+      }
+      const data = await res.json();
+      const imported = importPreset(data);
+      const db = getDatabase();
+      await db.presets.clear();
+      const preset: ChatPreset = {
+        ...imported,
+        id: crypto.randomUUID(),
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        apiTarget: 'primary',
+      };
+      await db.presets.add(preset);
+      await updateSettings({ activePresetId: preset.id });
+      showToast?.('默认预设已恢复');
+      window.location.reload();
+    } catch (e) {
+      alert('恢复失败: ' + (e as Error).message);
+    }
   };
 
   if (!settings) {
@@ -861,13 +890,22 @@ export function SystemSettingsPage({ onNavigate, onOpenLorebooks, onOpenPresets 
 
             <div style={{ borderTop: "1px solid rgba(170,0,0,0.12)", margin: "8px 0" }} />
 
-            <div className="pt-2">
+            <div className="pt-2 space-y-2">
+              <button
+                type="button"
+                className="jjk-btn jjk-btn--ghost w-full"
+                style={{ fontSize: 12 }}
+                onClick={handleRestoreDefaultPreset}
+              >
+                <RefreshCw size={12} />
+                恢复默认预设
+              </button>
               <button
                 type="button"
                 className="jjk-btn jjk-btn--ghost w-full"
                 style={{ fontSize: 12 }}
                 onClick={() => {
-                  if (!confirm('确定恢复默认设置？')) return;
+                  if (!confirm('确定恢复默认 API 设置？')) return;
                   updateSettings({
                     apiMode: 'single',
                     api: {
@@ -879,7 +917,7 @@ export function SystemSettingsPage({ onNavigate, onOpenLorebooks, onOpenPresets 
                 }}
               >
                 <RotateCcw size={12} />
-                恢复默认设置
+                恢复默认 API 设置
               </button>
             </div>
           </SectionCard>

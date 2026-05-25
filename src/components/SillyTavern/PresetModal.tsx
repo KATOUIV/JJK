@@ -218,6 +218,18 @@ export function PresetModal({ onClose }: { onClose: () => void }) {
     setDraft(remaining[0] ?? null);
   };
 
+  const togglePromptEnabled = (identifier: string) => {
+    if (!draft) return;
+    const order = ((draft.settings.prompt_order ?? []) as PromptOrderItem[]).slice();
+    const idx = order.findIndex((o) => o.identifier === identifier);
+    if (idx >= 0) {
+      order[idx] = { ...order[idx], enabled: order[idx].enabled === false };
+    } else {
+      order.push({ identifier, enabled: false });
+    }
+    patchSettings({ prompt_order: order });
+  };
+
   const handleAddCustomPrompt = () => {
     if (!draft) return;
     const current = (draft.settings.prompts ?? []) as CustomPromptItem[];
@@ -577,11 +589,15 @@ export function PresetModal({ onClose }: { onClose: () => void }) {
                               <code style={{ fontSize: 12, color: 'var(--jjk-text-4)' }}>{p.identifier}</code>
                               {p.name && <span style={{ fontSize: 12, color: 'var(--jjk-text-3)' }}>{p.name}</span>}
                               <span style={{ flex: 1 }} />
-                              {isEnabled ? (
-                                <span style={{ fontSize: 10, color: '#00CC66', fontFamily: 'monospace' }}>已激活</span>
-                              ) : (
-                                <span style={{ fontSize: 10, color: '#888', fontFamily: 'monospace' }}>未激活</span>
-                              )}
+                              <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer', fontSize: 12, color: isEnabled ? '#00CC66' : '#888', fontFamily: 'monospace' }}>
+                                <input
+                                  type="checkbox"
+                                  checked={isEnabled}
+                                  onChange={() => togglePromptEnabled(p.identifier)}
+                                  style={{ cursor: 'pointer' }}
+                                />
+                                {isEnabled ? '已激活' : '未激活'}
+                              </label>
                             </div>
                             <textarea
                               value={p.content ?? ''}
@@ -686,11 +702,15 @@ export function PresetModal({ onClose }: { onClose: () => void }) {
                                   <option value="assistant">assistant</option>
                                 </select>
                                 <span style={{ flex: 1 }} />
-                                {isEnabled ? (
-                                  <span style={{ fontSize: 10, color: '#00CC66', fontFamily: 'monospace' }}>已激活</span>
-                                ) : (
-                                  <span style={{ fontSize: 10, color: '#888', fontFamily: 'monospace' }}>未激活</span>
-                                )}
+                                <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer', fontSize: 12, color: isEnabled ? '#00CC66' : '#888', fontFamily: 'monospace' }}>
+                                  <input
+                                    type="checkbox"
+                                    checked={isEnabled}
+                                    onChange={() => togglePromptEnabled(p.identifier)}
+                                    style={{ cursor: 'pointer' }}
+                                  />
+                                  {isEnabled ? '已激活' : '未激活'}
+                                </label>
                                 <button
                                   onClick={() => {
                                     if (!confirm('删除此 prompt?')) return;
