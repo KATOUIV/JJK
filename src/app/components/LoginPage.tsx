@@ -66,25 +66,30 @@ export function LoginPage({ onClose, onNavigate, onLogin }: LoginPageProps) {
     e.preventDefault();
     const email = form.email.trim();
     if (!isQQEmail(email)) { setError("请输入正确的 QQ 邮箱"); return; }
-    if (!form.code || form.code.length !== 6) { setError("请输入 6 位验证码"); return; }
     if (mode === "register" && !form.password) { setError("请设置密码"); return; }
     if (mode === "register" && form.password !== form.confirm) { setError("两次密码不一致"); return; }
-    if (!verifyToken) { setError("请先获取验证码"); return; }
+
+    if (mode === "register") {
+      if (!form.code || form.code.length !== 6) { setError("请输入 6 位验证码"); return; }
+      if (!verifyToken) { setError("请先获取验证码"); return; }
+    }
 
     setError("");
     setLoading(true);
 
     try {
-      const res = await fetch('/api/send-verification', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, action: 'verify', token: verifyToken, code: form.code }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.valid) {
-        setError(data.error || '验证码错误或已过期');
-        setLoading(false);
-        return;
+      if (mode === "register") {
+        const res = await fetch('/api/send-verification', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, action: 'verify', token: verifyToken, code: form.code }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.valid) {
+          setError(data.error || '验证码错误或已过期');
+          setLoading(false);
+          return;
+        }
       }
 
       if (mode === "register") {
@@ -157,36 +162,38 @@ export function LoginPage({ onClose, onNavigate, onLogin }: LoginPageProps) {
             </div>
           </div>
 
-          {/* Verification Code */}
-          <div>
-            <label className="block mb-1.5" style={{ fontSize: 12, color: "var(--jjk-text-3)", fontFamily: "'Noto Sans SC', sans-serif" }}>
-              验证码
-            </label>
-            <div className="flex gap-2">
-              <div className="relative flex-1">
-                <ShieldCheck size={13} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--jjk-text-4)" }} />
-                <input
-                  id="login-code"
-                  className="jjk-input"
-                  style={{ paddingLeft: 32 }}
-                  placeholder="6位数字"
-                  maxLength={6}
-                  value={form.code}
-                  onChange={(e) => setForm({ ...form, code: e.target.value.replace(/\D/g, "") })}
-                />
+          {/* Verification Code (register only) */}
+          {mode === "register" && (
+            <div>
+              <label className="block mb-1.5" style={{ fontSize: 12, color: "var(--jjk-text-3)", fontFamily: "'Noto Sans SC', sans-serif" }}>
+                验证码
+              </label>
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <ShieldCheck size={13} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--jjk-text-4)" }} />
+                  <input
+                    id="login-code"
+                    className="jjk-input"
+                    style={{ paddingLeft: 32 }}
+                    placeholder="6位数字"
+                    maxLength={6}
+                    value={form.code}
+                    onChange={(e) => setForm({ ...form, code: e.target.value.replace(/\D/g, "") })}
+                  />
+                </div>
+                <button
+                  type="button"
+                  className="jjk-btn cursor-pointer"
+                  style={{ fontSize: 12, padding: "0 12px", whiteSpace: "nowrap" }}
+                  onClick={sendCode}
+                  disabled={countdown > 0 || !isQQEmail(form.email)}
+                >
+                  <Send size={12} />
+                  {countdown > 0 ? `${countdown}s` : "获取验证码"}
+                </button>
               </div>
-              <button
-                type="button"
-                className="jjk-btn cursor-pointer"
-                style={{ fontSize: 12, padding: "0 12px", whiteSpace: "nowrap" }}
-                onClick={sendCode}
-                disabled={countdown > 0 || !isQQEmail(form.email)}
-              >
-                <Send size={12} />
-                {countdown > 0 ? `${countdown}s` : "获取验证码"}
-              </button>
             </div>
-          </div>
+          )}
 
           {/* Password */}
           <div>
