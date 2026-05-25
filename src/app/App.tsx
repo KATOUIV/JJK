@@ -521,7 +521,10 @@ function InnerApp() {
           <LoadGamePage
             key="load-game"
             onNavigate={handleNavigate}
-            onLoadSave={() => setView("game")}
+            onLoadSave={(saveId) => {
+              selectChat(saveId);
+              setView("game");
+            }}
           />
         )}
         {view === "system-settings" && (
