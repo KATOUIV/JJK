@@ -546,7 +546,7 @@ export function PresetModal({ onClose }: { onClose: () => void }) {
                       <Search size={14} style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--jjk-text-4)' }} />
                       <input
                         type="text"
-                        placeholder="搜索 prompt 名称或 key..."
+                        placeholder="搜索 prompt 标识或名称..."
                         value={promptSearchQuery}
                         onChange={(e) => setPromptSearchQuery(e.target.value)}
                         style={{
@@ -561,23 +561,53 @@ export function PresetModal({ onClose }: { onClose: () => void }) {
                         }}
                       />
                     </div>
-                    {PROMPT_TEXT_FIELDS.filter((f) => {
+                    {((draft.settings.prompts ?? []) as Array<CustomPromptItem & { name?: string; enabled?: boolean }>)
+                      .map((p, idx) => ({ p, idx }))
+                      .filter(({ p }) => {
+                        if (!promptSearchQuery.trim()) return true;
+                        const q = promptSearchQuery.trim().toLowerCase();
+                        return p.identifier.toLowerCase().includes(q) || (p.name ?? '').toLowerCase().includes(q) || (p.content ?? '').toLowerCase().includes(q);
+                      })
+                      .map(({ p, idx }) => {
+                        const orderItem = (draft.settings.prompt_order ?? []).find((o: any) => o.identifier === p.identifier);
+                        const isEnabled = orderItem ? orderItem.enabled !== false : (p.enabled !== false);
+                        return (
+                          <div key={p.identifier + idx} style={{ marginBottom: 12, border: '1px solid rgba(100,100,100,0.2)', borderRadius: 4, padding: 8, background: 'rgba(28,28,28,0.4)', opacity: isEnabled ? 1 : 0.6 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                              <code style={{ fontSize: 12, color: 'var(--jjk-text-4)' }}>{p.identifier}</code>
+                              {p.name && <span style={{ fontSize: 12, color: 'var(--jjk-text-3)' }}>{p.name}</span>}
+                              <span style={{ flex: 1 }} />
+                              {isEnabled ? (
+                                <span style={{ fontSize: 10, color: '#00CC66', fontFamily: 'monospace' }}>已激活</span>
+                              ) : (
+                                <span style={{ fontSize: 10, color: '#888', fontFamily: 'monospace' }}>未激活</span>
+                              )}
+                            </div>
+                            <textarea
+                              value={p.content ?? ''}
+                              onChange={(e) => {
+                                const list = (draft.settings.prompts ?? []).slice();
+                                list[idx] = { ...list[idx], content: e.target.value };
+                                patchSettings({ prompts: list });
+                              }}
+                              style={{
+                                width: '100%',
+                                minHeight: 80,
+                                padding: 6,
+                                fontFamily: 'monospace',
+                                fontSize: 12,
+                                background: 'rgba(28,28,28,0.8)',
+                                border: '1px solid rgba(170,0,0,0.3)',
+                                color: 'var(--jjk-text)',
+                              }}
+                            />
+                          </div>
+                        );
+                      })}
+                    {((draft.settings.prompts ?? []) as CustomPromptItem[]).filter((p) => {
                       if (!promptSearchQuery.trim()) return true;
                       const q = promptSearchQuery.trim().toLowerCase();
-                      return f.label.toLowerCase().includes(q) || f.key.toLowerCase().includes(q);
-                    }).map((f) => (
-                      <TextArea
-                        key={f.key}
-                        label={f.label + ' (' + f.key + ')'}
-                        value={draft.settings[f.key]}
-                        onChange={(v) => patchSettings({ [f.key]: v })}
-                        rows={4}
-                      />
-                    ))}
-                    {PROMPT_TEXT_FIELDS.filter((f) => {
-                      if (!promptSearchQuery.trim()) return true;
-                      const q = promptSearchQuery.trim().toLowerCase();
-                      return f.label.toLowerCase().includes(q) || f.key.toLowerCase().includes(q);
+                      return p.identifier.toLowerCase().includes(q) || (p as any).name?.toLowerCase().includes(q) || (p.content ?? '').toLowerCase().includes(q);
                     }).length === 0 && (
                       <div style={{ textAlign: 'center', color: 'var(--jjk-text-4)', padding: 24, fontSize: 13 }}>
                         无匹配 prompt
