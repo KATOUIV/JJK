@@ -1,5 +1,5 @@
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
+import crypto from 'crypto';
+import nodemailer from 'nodemailer';
 
 const SECRET = process.env.VERIFY_SECRET;
 const SMTP_USER = process.env.SMTP_USER;
@@ -29,58 +29,59 @@ function verifyToken(token, email, code) {
   }
 }
 
-module.exports = async (req, res) => {
-  // Enable CORS — reflect origin to support any deployed domain
-  const origin = req.headers.origin;
-  if (origin) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-  }
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  if (!SECRET || !SMTP_USER || !SMTP_PASS) {
-    return res.status(500).json({ error: 'Server configuration error' });
-  }
-
-  const { email, action, token, code } = req.body || {};
-
-  if (!email || !/[\w.-]+@[\w.-]+\.\w+/.test(email)) {
-    return res.status(400).json({ error: 'Invalid email' });
-  }
-
-  // Verify code
-  if (action === 'verify') {
-    if (!token || !code) {
-      return res.status(400).json({ error: 'Missing token or code' });
-    }
-    const valid = verifyToken(token, email, code);
-    return res.status(200).json({ valid });
-  }
-
-  // Send code
-  const verificationCode = generateCode();
-  const newToken = createToken(email, verificationCode);
-
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.qq.com',
-    port: 465,
-    secure: true,
-    auth: {
-      user: SMTP_USER,
-      pass: SMTP_PASS,
-    },
-  });
-
+export default async function handler(req, res) {
   try {
+    // Enable CORS — reflect origin to support any deployed domain
+    const origin = req.headers.origin;
+    if (origin) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+    }
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
+    }
+
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    if (!SECRET || !SMTP_USER || !SMTP_PASS) {
+      return res.status(500).json({ error: 'Server configuration error: missing env vars' });
+    }
+
+    const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+    const { email, action, token, code } = body;
+
+    if (!email || !/[\w.-]+@[\w.-]+\.\w+/.test(email)) {
+      return res.status(400).json({ error: 'Invalid email' });
+    }
+
+    // Verify code
+    if (action === 'verify') {
+      if (!token || !code) {
+        return res.status(400).json({ error: 'Missing token or code' });
+      }
+      const valid = verifyToken(token, email, code);
+      return res.status(200).json({ valid });
+    }
+
+    // Send code
+    const verificationCode = generateCode();
+    const newToken = createToken(email, verificationCode);
+
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.qq.com',
+      port: 465,
+      secure: true,
+      auth: {
+        user: SMTP_USER,
+        pass: SMTP_PASS,
+      },
+    });
+
     await transporter.sendMail({
       from: `"JJK 咒术回战" <${SMTP_USER}>`,
       to: email,
@@ -97,7 +98,7 @@ module.exports = async (req, res) => {
 
     res.status(200).json({ token: newToken });
   } catch (err) {
-    console.error('Send mail error:', err);
-    res.status(500).json({ error: 'Failed to send email' });
+    console.error('API error:', err);
+    res.status(500).json({ error: err.message || 'Internal server error' });
   }
-};
+}
