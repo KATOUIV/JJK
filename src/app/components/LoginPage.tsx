@@ -26,7 +26,8 @@ export function LoginPage({ onClose, onNavigate, onLogin }: LoginPageProps) {
   const registeredUsers = JSON.parse(localStorage.getItem("jjk_registered_users") || "[]") as string[];
 
   const sendCode = async () => {
-    const email = form.email.trim();
+    const emailInput = document.getElementById("login-email") as HTMLInputElement | null;
+    const email = (emailInput?.value ?? form.email).trim();
     if (!isQQEmail(email)) { setError("请输入正确的 QQ 邮箱（如 123456@qq.com）"); return; }
     if (mode === "register" && registeredUsers.includes(email)) { setError("该邮箱已注册，请直接登录"); return; }
     if (mode === "login" && !registeredUsers.includes(email)) { setError("该邮箱未注册，请先注册"); return; }
@@ -156,6 +157,7 @@ export function LoginPage({ onClose, onNavigate, onLogin }: LoginPageProps) {
                 className="jjk-input"
                 style={{ paddingLeft: 32 }}
                 placeholder="123456@qq.com"
+                autoComplete="email"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
               />
@@ -183,10 +185,10 @@ export function LoginPage({ onClose, onNavigate, onLogin }: LoginPageProps) {
                 </div>
                 <button
                   type="button"
-                  className="jjk-btn cursor-pointer"
+                  className="jjk-btn"
                   style={{ fontSize: 12, padding: "0 12px", whiteSpace: "nowrap" }}
                   onClick={sendCode}
-                  disabled={countdown > 0 || !isQQEmail(form.email)}
+                  disabled={countdown > 0}
                 >
                   <Send size={12} />
                   {countdown > 0 ? `${countdown}s` : "获取验证码"}
@@ -208,6 +210,7 @@ export function LoginPage({ onClose, onNavigate, onLogin }: LoginPageProps) {
                 type={showPwd ? "text" : "password"}
                 style={{ paddingLeft: 32, paddingRight: 36 }}
                 placeholder={mode === "register" ? "设置密码" : "输入密码"}
+                autoComplete={mode === "register" ? "new-password" : "current-password"}
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
               />
@@ -231,6 +234,7 @@ export function LoginPage({ onClose, onNavigate, onLogin }: LoginPageProps) {
                   type="password"
                   style={{ paddingLeft: 32 }}
                   placeholder="再次输入密码"
+                  autoComplete="new-password"
                   value={form.confirm}
                   onChange={(e) => setForm({ ...form, confirm: e.target.value })}
                 />

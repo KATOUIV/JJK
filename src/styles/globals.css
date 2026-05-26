@@ -193,6 +193,10 @@ h1, h2, h3, h4 {
 .jjk-btn--gold:hover          { background: rgba(212,175,55,0.25); box-shadow: 0 0 16px rgba(212,175,55,0.25); }
 .jjk-btn--ghost               { background: transparent; border-color: rgba(255,255,255,0.12); color: var(--jjk-text-3); }
 .jjk-btn--ghost:hover         { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.22); color: var(--jjk-text); }
+.jjk-btn:disabled,
+.jjk-btn[disabled]            { opacity: 0.45; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+.jjk-btn:disabled::before,
+.jjk-btn[disabled]::before    { opacity: 0.2 !important; }
 
 /* ===== PROGRESS BARS ===== */
 .jjk-bar-track {
