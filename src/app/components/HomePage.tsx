@@ -71,7 +71,7 @@ export function HomePage({ onNavigate, userEmail, onLogout }: HomePageProps) {
 
   return (
     <div
-      className="relative flex flex-col h-screen w-full overflow-hidden"
+      className="relative flex flex-col h-[100dvh] w-full overflow-hidden"
       style={{ background: "linear-gradient(165deg, #120000 0%, #1C1C1C 45%, #0a0a1a 100%)" }}
     >
       {/* Atmospheric overlay */}
@@ -225,7 +225,12 @@ export function HomePage({ onNavigate, userEmail, onLogout }: HomePageProps) {
                     transition={{ delay: 0.5 + i * 0.12, duration: 0.4 }}
                     whileHover={{ x: 4 }}
                     whileTap={{ scale: 0.97 }}
-                    onClick={() => onNavigate(item.id)}
+                    onClick={() => {
+                      if (window.innerWidth < 768) {
+                        document.documentElement.requestFullscreen?.().catch(() => {});
+                      }
+                      onNavigate(item.id);
+                    }}
                   >
                     <div className="flex items-center gap-3">
                       <div

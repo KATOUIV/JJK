@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ArrowLeft, ArrowRight, Check, Plus, Minus, Zap, Shield, Wind, Brain, Star, Sword, CheckSquare, Square } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Plus, Minus, Zap, Shield, Wind, Brain, Star, Sword, CheckSquare, Square, Home } from "lucide-react";
 import type { AppView, CharacterCreation } from "../types";
 
 interface NewGameFlowProps {
@@ -131,8 +131,10 @@ function HexRadar({ attrs, max }: { attrs: CharacterCreation["attributes"]; max:
 
 function Step2({ data, onChange }: { data: CharacterCreation; onChange: (d: Partial<CharacterCreation>) => void }) {
   const adjust = (key: keyof CharacterCreation["attributes"], delta: number) => {
-    const newVal = Math.max(0, data.attributes[key] + delta);
-    const newRemaining = data.remainingPoints - delta;
+    const currentVal = data.attributes[key];
+    const newVal = Math.max(0, currentVal + delta);
+    const actualDelta = newVal - currentVal;
+    const newRemaining = data.remainingPoints - actualDelta;
     if (newRemaining < 0) return;
     onChange({ attributes: { ...data.attributes, [key]: newVal }, remainingPoints: newRemaining });
   };
@@ -493,7 +495,7 @@ export function NewGameFlow({ onComplete, onBack }: NewGameFlowProps) {
 
   return (
     <div
-      className="relative flex flex-col h-screen overflow-hidden"
+      className="relative flex flex-col h-[100dvh] overflow-hidden"
       style={{ background: "linear-gradient(165deg, #100000 0%, #1C1C1C 50%, #0a0a18 100%)" }}
     >
       {/* Background */}
@@ -543,6 +545,20 @@ export function NewGameFlow({ onComplete, onBack }: NewGameFlowProps) {
             );
           })}
         </div>
+
+        {/* Mobile exit fullscreen / home */}
+        <motion.button
+          className="md:hidden flex items-center justify-center w-8 h-8 cursor-pointer shrink-0"
+          style={{ background: "rgba(28,28,28,0.7)", border: "1px solid rgba(170,0,0,0.25)" }}
+          whileTap={{ scale: 0.92 }}
+          onClick={() => {
+            if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
+            onBack();
+          }}
+          title="退出并返回主页"
+        >
+          <Home size={14} style={{ color: "var(--jjk-text-3)" }} />
+        </motion.button>
       </div>
 
       {/* Step title */}
@@ -581,8 +597,8 @@ export function NewGameFlow({ onComplete, onBack }: NewGameFlowProps) {
 
       {/* Footer */}
       <div
-        className="relative z-10 flex items-center justify-between px-5 py-4 shrink-0"
-        style={{ borderTop: "1px solid rgba(170,0,0,0.15)" }}
+        className="relative z-10 flex items-center justify-between px-5 pt-4 pb-safe shrink-0"
+        style={{ borderTop: "1px solid rgba(170,0,0,0.15)", paddingBottom: "max(16px, env(safe-area-inset-bottom))" }}
       >
         <span style={{ fontSize: 12, color: "var(--jjk-text-4)", fontFamily: "'Noto Sans SC', sans-serif" }}>
           {data.name && `· ${data.name}`} {data.faction && `· ${data.faction}`}

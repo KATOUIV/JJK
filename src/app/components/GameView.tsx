@@ -406,7 +406,7 @@ export function GameView({
   const epPct = Math.round(((user.咒力?.当前值 ?? 0) / (user.咒力?.最大值 ?? 100)) * 100);
 
   return (
-    <div className="flex h-screen w-full overflow-hidden" style={{ background: "#0E0A08" }}>
+    <div className="flex h-[100dvh] w-full overflow-hidden" style={{ background: "#0E0A08" }}>
       {/* Left sidebar (desktop) */}
       <GameLeftSidebar
         activePanel={activePanel}

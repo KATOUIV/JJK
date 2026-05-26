@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ArrowLeft, RotateCcw, Trash2, MapPin, Clock, User, Star, AlertTriangle } from "lucide-react";
+import { ArrowLeft, RotateCcw, Trash2, MapPin, Clock, User, Star, AlertTriangle, Home } from "lucide-react";
 import type { AppView, SaveFile } from "../types";
 import { useSillytavern } from "../../hooks/useSillytavern";
 
@@ -133,7 +133,7 @@ export function LoadGamePage({ onNavigate, onLoadSave }: LoadGamePageProps) {
 
   return (
     <div
-      className="relative flex flex-col h-screen w-full overflow-hidden"
+      className="relative flex flex-col h-[100dvh] w-full overflow-hidden"
       style={{ background: "linear-gradient(165deg, #120000 0%, #1C1C1C 45%, #0a0a1a 100%)" }}
     >
       {/* Background grid */}
@@ -162,12 +162,26 @@ export function LoadGamePage({ onNavigate, onLoadSave }: LoadGamePageProps) {
         >
           <ArrowLeft size={15} style={{ color: "var(--jjk-text-3)" }} />
         </motion.button>
-        <div>
+        <div className="flex-1 min-w-0">
           <h1 className="jjk-title-section" style={{ fontSize: 15 }}>接续咒术之旅</h1>
           <p style={{ fontSize: 11, color: "var(--jjk-text-4)", fontFamily: "'Noto Sans SC', sans-serif" }}>
             选择存档，继续你的故事
           </p>
         </div>
+
+        {/* Mobile exit fullscreen / home */}
+        <motion.button
+          className="md:hidden flex items-center justify-center w-8 h-8 cursor-pointer shrink-0"
+          style={{ background: "rgba(28,28,28,0.7)", border: "1px solid rgba(170,0,0,0.25)" }}
+          whileTap={{ scale: 0.92 }}
+          onClick={() => {
+            if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
+            onNavigate("home");
+          }}
+          title="退出并返回主页"
+        >
+          <Home size={14} style={{ color: "var(--jjk-text-3)" }} />
+        </motion.button>
       </div>
 
       {/* Content */}

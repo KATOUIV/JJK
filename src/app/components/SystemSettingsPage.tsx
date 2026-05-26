@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import {
   ArrowLeft, Cpu, Globe, Key, ChevronDown, Check, BookOpen,
   Sliders, Save, RotateCcw, RefreshCw,
-  Upload, Download, Trash2, Edit3, Plus,
+  Upload, Download, Trash2, Edit3, Plus, Home,
 } from "lucide-react";
 import type { AppView } from "../types";
 import { useSillytavern } from "../../hooks/useSillytavern";
@@ -386,7 +386,7 @@ export function SystemSettingsPage({ onNavigate, onOpenLorebooks, onOpenPresets 
 
   if (!settings) {
     return (
-      <div className="flex items-center justify-center h-screen w-full" style={{ background: "linear-gradient(165deg, #120000 0%, #1C1C1C 45%, #0a0a1a 100%)" }}>
+      <div className="flex items-center justify-center h-[100dvh] w-full" style={{ background: "linear-gradient(165deg, #120000 0%, #1C1C1C 45%, #0a0a1a 100%)" }}>
         <p style={{ color: "var(--jjk-text-4)", fontFamily: "'Noto Sans SC', sans-serif" }}>加载中……</p>
       </div>
     );
@@ -394,7 +394,7 @@ export function SystemSettingsPage({ onNavigate, onOpenLorebooks, onOpenPresets 
 
   return (
     <div
-      className="relative flex flex-col h-screen w-full overflow-hidden"
+      className="relative flex flex-col h-[100dvh] w-full overflow-hidden"
       style={{ background: "linear-gradient(165deg, #120000 0%, #1C1C1C 45%, #0a0a1a 100%)" }}
     >
       {/* Background */}
@@ -414,7 +414,7 @@ export function SystemSettingsPage({ onNavigate, onOpenLorebooks, onOpenPresets 
         className="relative z-10 flex items-center justify-between px-6"
         style={{ height: 60, borderBottom: "1px solid rgba(170,0,0,0.12)", flexShrink: 0 }}
       >
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 md:gap-4">
           <motion.button
             className="w-8 h-8 flex items-center justify-center cursor-pointer"
             style={{ background: "rgba(28,28,28,0.7)", border: "1px solid rgba(170,0,0,0.25)" }}
@@ -424,22 +424,36 @@ export function SystemSettingsPage({ onNavigate, onOpenLorebooks, onOpenPresets 
           >
             <ArrowLeft size={15} style={{ color: "var(--jjk-text-3)" }} />
           </motion.button>
-          <div>
+          <div className="min-w-0">
             <h1 className="jjk-title-section" style={{ fontSize: 15 }}>咒术系统设置</h1>
-            <p style={{ fontSize: 11, color: "var(--jjk-text-4)", fontFamily: "'Noto Sans SC', sans-serif" }}>
+            <p className="hidden sm:block" style={{ fontSize: 11, color: "var(--jjk-text-4)", fontFamily: "'Noto Sans SC', sans-serif" }}>
               配置 LLM 接口与世界设定
             </p>
           </div>
         </div>
-        <motion.button
-          className="jjk-btn jjk-btn--primary"
-          style={{ fontSize: 12, padding: "7px 18px" }}
-          whileTap={{ scale: 0.96 }}
-          onClick={handleSave}
-          animate={savedIndicator ? { background: "rgba(0,100,0,0.3)", borderColor: "rgba(0,170,0,0.6)" } : {}}
-        >
-          {savedIndicator ? <><Check size={13} /> 已保存</> : <><Save size={13} /> 保存设置</>}
-        </motion.button>
+        <div className="flex items-center gap-2">
+          <motion.button
+            className="jjk-btn jjk-btn--primary"
+            style={{ fontSize: 12, padding: "7px 14px" }}
+            whileTap={{ scale: 0.96 }}
+            onClick={handleSave}
+            animate={savedIndicator ? { background: "rgba(0,100,0,0.3)", borderColor: "rgba(0,170,0,0.6)" } : {}}
+          >
+            {savedIndicator ? <><Check size={13} /> <span className="hidden sm:inline">已保存</span></> : <><Save size={13} /> <span className="hidden sm:inline">保存设置</span></>}
+          </motion.button>
+          <motion.button
+            className="md:hidden flex items-center justify-center w-8 h-8 cursor-pointer shrink-0"
+            style={{ background: "rgba(28,28,28,0.7)", border: "1px solid rgba(170,0,0,0.25)" }}
+            whileTap={{ scale: 0.92 }}
+            onClick={() => {
+              if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
+              onNavigate("home");
+            }}
+            title="退出并返回主页"
+          >
+            <Home size={14} style={{ color: "var(--jjk-text-3)" }} />
+          </motion.button>
+        </div>
       </div>
 
       {/* Scrollable content */}
