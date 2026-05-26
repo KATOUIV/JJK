@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { User, Sword, RotateCcw, Settings, ChevronRight } from "lucide-react";
+import { User, Sword, RotateCcw, Settings, ChevronRight, Maximize2, Minimize2 } from "lucide-react";
 import type { AppView } from "../types";
 
 const RUNES = ["咒", "術", "廻", "戦", "呪", "霊", "縛", "術", "式", "域"];
@@ -63,11 +63,26 @@ const runePositions = Array.from({ length: 18 }, (_, i) => ({
 
 export function HomePage({ onNavigate, userEmail, onLogout }: HomePageProps) {
   const [ready, setReady] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setReady(true), 200);
     return () => clearTimeout(t);
   }, []);
+
+  useEffect(() => {
+    const onChange = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", onChange);
+    return () => document.removeEventListener("fullscreenchange", onChange);
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen?.().catch(() => {});
+    } else {
+      document.documentElement.requestFullscreen?.().catch(() => {});
+    }
+  };
 
   return (
     <div
@@ -102,10 +117,26 @@ export function HomePage({ onNavigate, userEmail, onLogout }: HomePageProps) {
 
       {/* Top bar */}
       <div className="relative z-10 flex items-center justify-between px-6 pt-safe" style={{ height: 56 }}>
-        {/* Version */}
-        <span className="jjk-mono" style={{ color: "rgba(170,0,0,0.4)", fontSize: 10, letterSpacing: "0.2em" }}>
-          SANCTUM v0.1.0-α
-        </span>
+        {/* Left: version + fullscreen toggle */}
+        <div className="flex items-center gap-3">
+          <span className="jjk-mono" style={{ color: "rgba(170,0,0,0.4)", fontSize: 10, letterSpacing: "0.2em" }}>
+            SANCTUM v0.1.0-α
+          </span>
+          <motion.button
+            className="flex items-center justify-center w-7 h-7 cursor-pointer"
+            style={{
+              background: "rgba(28,28,28,0.7)",
+              border: "1px solid rgba(170,0,0,0.25)",
+              color: "var(--jjk-text-3)",
+            }}
+            whileHover={{ borderColor: "rgba(170,0,0,0.6)", color: "var(--jjk-text)" }}
+            whileTap={{ scale: 0.92 }}
+            onClick={toggleFullscreen}
+            title={isFullscreen ? "退出全屏" : "全屏显示"}
+          >
+            {isFullscreen ? <Minimize2 size={12} /> : <Maximize2 size={12} />}
+          </motion.button>
+        </div>
         {/* Account button */}
         {userEmail ? (
           <div className="flex items-center gap-2">
